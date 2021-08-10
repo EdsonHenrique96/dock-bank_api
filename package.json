@@ -2,7 +2,7 @@
   "name": "dock-bank",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Edson Batista <edson.batista@catho.com>",
+  "author": "Edson Batista",
   "license": "MIT",
   "scripts": {
     "start:dev": "nodemon",
@@ -12,6 +12,8 @@
     "test": "jest --verbose"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.4.13",
     "jest": "^27.0.6",
@@ -20,5 +22,9 @@
     "ts-jest": "^27.0.4",
     "ts-node": "^10.2.0",
     "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
   }
 }
