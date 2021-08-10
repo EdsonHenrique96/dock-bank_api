@@ -1,0 +1,7 @@
+{
+  "name": "dock-bank",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Edson Batista <edson.batista@catho.com>",
+  "license": "MIT"
+}
