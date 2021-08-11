@@ -7,6 +7,9 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -20,6 +23,8 @@ module.exports = {
   ignorePatterns: ['build/*', 'jest.config.js'],
   rules: {
     'import/extensions': 'off',
+    'import/prefer-default-export': 'off',
+    'class-methods-use-this': 'off',
   },
   settings: {
     'import/resolver': {
