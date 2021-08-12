@@ -1,6 +1,8 @@
 import { Account } from '../../models/account';
 
 export interface AccountRepository {
-  add(account: Account): Promise<Account>;
-  getByOwner(ownerId: string): Promise<Account|null>;
+  save(account: Account): Promise<boolean>;
+  getByOwner(ownerId: string): Promise<Account>;
+  getByid(id: string): Promise<Account>;
+  update(account: Account): Promise<Account>;
 }

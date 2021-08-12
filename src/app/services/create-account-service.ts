@@ -1,9 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-
-import { UserNotFoundError } from './errors';
-
+import { AppError, ErrorType } from './errors/app-error';
 import { Account } from '../models/account';
-
 import { AccountRepository, UserRepository } from './protocols';
 
 interface AccountDTO {
@@ -30,12 +27,15 @@ export class CreateAccountService {
       .getById(account.ownerId);
 
     if (!owner) {
-      throw new UserNotFoundError('User is mandatory.');
+      throw new AppError({
+        message: 'User is mandatory.',
+        type: ErrorType.UserNotFoundError,
+      });
     }
 
     const existingAccount = await this
       .accountRepository
-      .getByOwner(owner.id);
+      .getByOwner(account.ownerId);
 
     if (existingAccount) {
       return existingAccount;
@@ -51,10 +51,14 @@ export class CreateAccountService {
       },
     );
 
-    const savedAccount = await this
+    const created = await this
       .accountRepository
-      .add(newAccount);
+      .save(newAccount);
 
-    return savedAccount;
+    if (!created) {
+      throw new Error('Account creation fails');
+    }
+
+    return newAccount;
   }
 }
