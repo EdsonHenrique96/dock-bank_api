@@ -1,13 +1,37 @@
-import express, { json } from 'express';
+import express, {
+  Express,
+  json,
+} from 'express';
 import cors from 'cors';
 
-import routes from './routes';
+import { setupDb, initSchema } from './helpers/setupDatabase';
 
-const api = express();
+import accountRoutes from './routes/account.routes';
+import errorHandler from './middlewares/error-handler-middleware';
 
-api.use(json());
-api.use(cors());
+export const setupApi = async (): Promise<Express> => {
+  const api = express();
 
-api.use(routes);
+  try {
+    await setupDb();
+  } catch (error) {
+    console.error(`fails to configure database connection: ${error.message}`);
+    process.exit(1);
+  }
 
-export default api;
+  try {
+    await initSchema();
+  } catch (error) {
+    console.error(`Failed to start database schema: ${error.message}`);
+    process.exit(1);
+  }
+
+  api.use(json());
+  api.use(cors());
+
+  api.use(accountRoutes);
+  // FIXME - this middleware is not working
+  api.use(errorHandler);
+
+  return api;
+};
