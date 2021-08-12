@@ -11,6 +11,7 @@ import { AppError } from '../../services/errors/app-error';
 import { DbTransactionRepository } from '../../infra/repositories/transaction-repository';
 import { AccountWithdrawService } from '../../services/account-withdraw-service';
 import { GetBalanceAccountService } from '../../services/get-balance-account-service';
+import { DisableAccountService } from '../../services/disable-account-service';
 
 enum HttpErrors {
   AccountNotFoundError = 422,
@@ -107,6 +108,31 @@ accountRoutes.get('/account/:accountId/balance', async (req: Request, res: Respo
       .getBalance(accountId);
 
     return res.json({ balance });
+  } catch (error) {
+    console.error({ message: error.message });
+
+    if (error instanceof AppError) {
+      return res
+        .status(HttpErrors[error.type])
+        .json({ message: error.message });
+    }
+
+    return res
+      .status(500)
+      .json({ message: error.message });
+  }
+});
+
+accountRoutes.patch('/account/:accountId', async (req: Request, res: Response) => {
+  try {
+    const { accountId } = req.params;
+
+    const disableAccountService = new DisableAccountService(accounRepository);
+
+    const isDisable = await disableAccountService
+      .disable(accountId);
+
+    return res.json({ accountId, isActive: !isDisable });
   } catch (error) {
     console.error({ message: error.message });
 
