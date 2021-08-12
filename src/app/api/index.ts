@@ -7,6 +7,8 @@ import cors from 'cors';
 import { setupDb, initSchema } from './helpers/setupDatabase';
 
 import accountRoutes from './routes/account.routes';
+import userRoutes from './routes/user.routes';
+
 import errorHandler from './middlewares/error-handler-middleware';
 
 export const setupApi = async (): Promise<Express> => {
@@ -30,6 +32,7 @@ export const setupApi = async (): Promise<Express> => {
   api.use(cors());
 
   api.use(accountRoutes);
+  api.use(userRoutes);
   // FIXME - this middleware is not working
   api.use(errorHandler);
 

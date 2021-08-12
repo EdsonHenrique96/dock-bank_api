@@ -7,12 +7,13 @@ import { DbUserRepository } from '../../infra/repositories/user-repository';
 import { CreateAccountService } from '../../services/create-account-service';
 import { AccountDepositService } from '../../services/account-deposit-service';
 
-import { AppError } from '../../services/errors/app-error';
 import { DbTransactionRepository } from '../../infra/repositories/transaction-repository';
 import { AccountWithdrawService } from '../../services/account-withdraw-service';
 import { GetBalanceAccountService } from '../../services/get-balance-account-service';
 import { DisableAccountService } from '../../services/disable-account-service';
 import { GetTransactionService } from '../../services/get-transaction-service';
+
+import { AppError } from '../../services/errors/app-error';
 
 enum HttpErrors {
   AccountNotFoundError = 422,

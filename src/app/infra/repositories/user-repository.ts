@@ -13,10 +13,7 @@ export class DbUserRepository implements UserRepository {
   }
 
   async save(user: User): Promise<User> {
-    const sqlQuery = `
-      INSER INTO ${this.TABLE_NAME} (id, name, cpf, birthDate)
-      VALUES (?,?,?,?)
-    `;
+    const sqlQuery = `INSERT INTO ${this.TABLE_NAME} (id, name, cpf, birthDate) VALUES (?, ?, ?, ?)`;
 
     const {
       id,
@@ -29,7 +26,12 @@ export class DbUserRepository implements UserRepository {
       .mysqlClient
       .runQuery<User>({
         sqlQuery,
-        placeholderValues: [id, name, cpf, birthDate.toUTCString()],
+        placeholderValues: [
+          id,
+          name,
+          cpf,
+          birthDate.toUTCString(),
+        ],
       });
 
     return savedUser;
