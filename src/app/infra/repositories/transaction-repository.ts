@@ -7,32 +7,48 @@ import { Transaction, TransactionType } from '../../models/transaction';
 export class DbTransactionRepository implements TransactionRepository {
   private readonly mysqlClient: MysqlClient;
 
-  private readonly TABLE_NAME = 'user';
+  private readonly TABLE_NAME = 'transaction';
 
   constructor(mysqlClient: MysqlClient) {
     this.mysqlClient = mysqlClient;
   }
 
-  async getToday(accountId: string): Promise<Transaction[]> {
+  async getByAccount(accountId: string): Promise<Transaction[]> {
     const sqlQuery = `
-      SELECT * FROM transaction
-      WHERE accountId=? AND date(createdAt) = CURDATE()
+      SELECT * FROM ${this.TABLE_NAME}
+      WHERE accountId=?
     `;
 
-    const savedUser = await this
+    const transactions = await this
       .mysqlClient
       .runQuery<Transaction[]>({
         sqlQuery,
         placeholderValues: [accountId],
       });
 
-    return savedUser;
+    return transactions;
+  }
+
+  async getToday(accountId: string): Promise<Transaction[]> {
+    const sqlQuery = `
+      SELECT * FROM ${this.TABLE_NAME}
+      WHERE accountId=? AND date(createdAt) = CURDATE()
+    `;
+
+    const transactions = await this
+      .mysqlClient
+      .runQuery<Transaction[]>({
+        sqlQuery,
+        placeholderValues: [accountId],
+      });
+
+    return transactions;
   }
 
   async create(accountId: string, amount: number, type: TransactionType): Promise<string> {
     const id = uuidV4();
     const sqlQuery = `
-      INSERT INTO transaction (id, accountId, amount, type)
+      INSERT INTO ${this.TABLE_NAME} (id, accountId, amount, type)
       VALUES (?, ?, ?, ?)
     `;
 
