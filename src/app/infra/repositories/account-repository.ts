@@ -73,10 +73,10 @@ export class DbAccountRepository implements AccountRepository {
     return account;
   }
 
-  async update(account: Account): Promise<Account> {
+  async update(account: Account): Promise<boolean> {
     const sqlQuery = `
       UPDATE ${this.TABLE_NAME}
-      SET balance=? dailyWithdrawal=? isActive=? accountType=?
+      SET balance=?, dailyWithdrawalLimit=?, isActive=?, accountType=?
     `;
 
     const {
@@ -86,13 +86,13 @@ export class DbAccountRepository implements AccountRepository {
       accountType,
     } = account;
 
-    const updatedAccount = await this
+    const result :{ affectedRows: number } = await this
       .mysqlClient
-      .runQuery<Account>({
+      .runQuery({
         sqlQuery,
         placeholderValues: [balance, dailyWithdrawlLimit, isActive, accountType],
       });
 
-    return updatedAccount;
+    return result.affectedRows === 1;
   }
 }

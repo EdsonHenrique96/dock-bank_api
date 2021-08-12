@@ -5,8 +5,10 @@ import { DbAccountRepository } from '../../infra/repositories/account-repository
 import { DbUserRepository } from '../../infra/repositories/user-repository';
 
 import { CreateAccountService } from '../../services/create-account-service';
+import { AccountDepositService } from '../../services/account-deposit-service';
 
 import { AppError } from '../../services/errors/app-error';
+import { DbTransactionRepository } from '../../infra/repositories/transaction-repository';
 
 enum HttpErrors {
   AccountNotFoundError = 422,
@@ -17,10 +19,11 @@ enum HttpErrors {
 
 const accountRoutes = Router();
 
-accountRoutes.post('/account', async (req: Request, res: Response) => {
-  const accounRepository = new DbAccountRepository(mysqlClient);
-  const userRepository = new DbUserRepository(mysqlClient);
+const accounRepository = new DbAccountRepository(mysqlClient);
+const userRepository = new DbUserRepository(mysqlClient);
+const transactionRepository = new DbTransactionRepository(mysqlClient);
 
+accountRoutes.post('/account', async (req: Request, res: Response) => {
   try {
     const accountDate = req.body;
 
@@ -37,6 +40,34 @@ accountRoutes.post('/account', async (req: Request, res: Response) => {
     );
 
     return res.status(201).json(accountCreated);
+  } catch (error) {
+    console.error({ message: error.message });
+
+    if (error instanceof AppError) {
+      return res
+        .status(HttpErrors[error.type])
+        .json({ message: error.message });
+    }
+
+    return res
+      .status(500)
+      .json({ message: error.message });
+  }
+});
+
+accountRoutes.patch('/account/:accountId/balance', async (req: Request, res: Response) => {
+  try {
+    const { accountId } = req.params;
+    const { amount } = req.body;
+
+    const accountDepositService = new AccountDepositService(
+      accounRepository,
+      transactionRepository,
+    );
+
+    const depositTransaction = await accountDepositService.deposit(accountId, amount);
+
+    return res.json(depositTransaction);
   } catch (error) {
     console.error({ message: error.message });
 
