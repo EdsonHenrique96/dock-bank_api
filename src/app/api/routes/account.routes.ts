@@ -9,6 +9,7 @@ import { AccountDepositService } from '../../services/account-deposit-service';
 
 import { AppError } from '../../services/errors/app-error';
 import { DbTransactionRepository } from '../../infra/repositories/transaction-repository';
+import { AccountWithdrawService } from '../../services/account-withdraw-service';
 
 enum HttpErrors {
   AccountNotFoundError = 422,
@@ -58,16 +59,28 @@ accountRoutes.post('/account', async (req: Request, res: Response) => {
 accountRoutes.patch('/account/:accountId/balance', async (req: Request, res: Response) => {
   try {
     const { accountId } = req.params;
-    const { amount } = req.body;
+    const { amount, type } = req.body;
 
-    const accountDepositService = new AccountDepositService(
-      accounRepository,
-      transactionRepository,
-    );
+    if (type === 'deposit') {
+      const accountDepositService = new AccountDepositService(
+        accounRepository,
+        transactionRepository,
+      );
+      const depositTransaction = await accountDepositService.deposit(accountId, amount);
 
-    const depositTransaction = await accountDepositService.deposit(accountId, amount);
+      return res.json(depositTransaction);
+    }
 
-    return res.json(depositTransaction);
+    if (type === 'withdraw') {
+      const accountDepositService = new AccountWithdrawService(
+        accounRepository,
+        transactionRepository,
+      );
+      const x = await accountDepositService.withdraw(accountId, amount);
+      return res.json(x);
+    }
+
+    return res.status(400).json({ message: 'Operation not allowed' });
   } catch (error) {
     console.error({ message: error.message });
 

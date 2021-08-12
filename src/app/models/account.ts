@@ -7,7 +7,7 @@ export class Account {
 
   public balance: number;
 
-  public dailyWithdrawlLimit: number;
+  public dailyWithdrawalLimit: number;
 
   public isActive: boolean;
 
@@ -18,7 +18,7 @@ export class Account {
     this.id = id;
     this.ownerId = ownerId;
     this.balance = 0;
-    this.dailyWithdrawlLimit = 0;
+    this.dailyWithdrawalLimit = 100000; // FIXME
     this.isActive = true;
     this.accountType = accountType;
   }

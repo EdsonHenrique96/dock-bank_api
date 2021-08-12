@@ -17,7 +17,7 @@ export class DbAccountRepository implements AccountRepository {
       ownerId,
       accountType,
       balance,
-      dailyWithdrawlLimit,
+      dailyWithdrawalLimit,
       isActive,
     } = account;
 
@@ -35,7 +35,7 @@ export class DbAccountRepository implements AccountRepository {
           id,
           ownerId,
           balance,
-          dailyWithdrawlLimit,
+          dailyWithdrawalLimit,
           isActive,
           accountType,
         ],
@@ -81,7 +81,7 @@ export class DbAccountRepository implements AccountRepository {
 
     const {
       balance,
-      dailyWithdrawlLimit,
+      dailyWithdrawalLimit,
       isActive,
       accountType,
     } = account;
@@ -90,7 +90,7 @@ export class DbAccountRepository implements AccountRepository {
       .mysqlClient
       .runQuery({
         sqlQuery,
-        placeholderValues: [balance, dailyWithdrawlLimit, isActive, accountType],
+        placeholderValues: [balance, dailyWithdrawalLimit, isActive, accountType],
       });
 
     return result.affectedRows === 1;
