@@ -1,8 +1,10 @@
 export enum ErrorType {
   AccountNotFoundError = 'AccountNotFoundError',
   AccountWithoutBalance = 'AccountWithoutBalance',
+  ExceededTheDailyLimit = 'ExceededTheDailyLimit',
   UserAlreadExistsError = 'UserAlreadExistsError',
   UserNotFoundError = 'UserNotFoundError',
+
 }
 
 interface AppErrorInterface {

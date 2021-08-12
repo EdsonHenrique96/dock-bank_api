@@ -64,7 +64,10 @@ export class AccountWithdrawService {
     const hasDailyLimit = dailyLimit >= amount;
 
     if (!hasDailyLimit) {
-      throw new Error(`Exceeded the daily limit, your daily limit ${dailyLimit}`);
+      throw new AppError({
+        message: `Exceeded the daily limit, your remaining daily limit ${dailyLimit}`,
+        type: ErrorType.ExceededTheDailyLimit,
+      });
     }
 
     account.balance -= amount;
