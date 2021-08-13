@@ -11,17 +11,17 @@ enum HttpErrors {
 }
 
 export default (
-  error: Error,
+  error: AppError,
   req: Request,
   res: Response,
   _: NextFunction,
 ): Response => {
   console.error({ message: error.message });
 
-  if (error instanceof AppError) {
+  if (error.type) {
     return res
       .status(HttpErrors[error.type])
-      .json();
+      .json({ message: error.message });
   }
 
   return res
