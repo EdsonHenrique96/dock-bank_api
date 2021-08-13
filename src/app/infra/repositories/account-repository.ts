@@ -14,7 +14,7 @@ export class DbAccountRepository implements AccountRepository {
   async save(account: Account): Promise<boolean> {
     const {
       id,
-      ownerId,
+      userId,
       accountType,
       balance,
       dailyWithdrawalLimit,
@@ -33,7 +33,7 @@ export class DbAccountRepository implements AccountRepository {
         sqlQuery,
         placeholderValues: [
           id,
-          ownerId,
+          userId,
           balance,
           dailyWithdrawalLimit,
           isActive,
@@ -44,14 +44,14 @@ export class DbAccountRepository implements AccountRepository {
     return result.affectedRows === 1;
   }
 
-  async getByOwner(ownerId: string): Promise<Account> {
+  async getByOwner(userId: string): Promise<Account> {
     const sqlQuery = `SELECT * FROM ${this.TABLE_NAME} WHERE userId=?`;
 
     const [account] = await this
       .mysqlClient
       .runQuery<Account[]>({
         sqlQuery,
-        placeholderValues: [ownerId],
+        placeholderValues: [userId],
       });
 
     return account;

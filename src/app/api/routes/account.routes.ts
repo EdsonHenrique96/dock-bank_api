@@ -35,7 +35,7 @@ accountRoutes.post('/account', async (req: Request, res: Response, next: NextFun
 
     const accountCreated = await createAccountService.create(
       {
-        ownerId: accountDate.ownerId,
+        userId: accountDate.userId,
         accountType: accountDate.accountType,
       },
     );

@@ -9,7 +9,7 @@ export enum AccountType {
 export class Account {
   public readonly id: string;
 
-  public readonly ownerId: string;
+  public readonly userId: string;
 
   public balance: number;
 
@@ -19,10 +19,10 @@ export class Account {
 
   public accountType: AccountType;
 
-  constructor({ id, ownerId, accountType }
-    : { id?: string, ownerId: string, accountType: AccountType }) {
+  constructor({ id, userId, accountType }
+    : { id?: string, userId: string, accountType: AccountType }) {
     this.id = id || uuidV4();
-    this.ownerId = ownerId;
+    this.userId = userId;
     this.balance = 0;
     this.dailyWithdrawalLimit = 100000; // FIXME
     this.isActive = true;

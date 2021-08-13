@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import { v4 as uuidV4 } from 'uuid';
-import { agent as resquest } from 'supertest';
+import { agent as request } from 'supertest';
 
 import { setupApi } from '../../../src/app/api/index';
 import { mysqlClient } from '../../../src/app/infra/modules/mysql-client';
@@ -26,7 +26,7 @@ const nonExistentUserId = uuidV4();
 const populateDb = async (): Promise<void> => {
   await mysqlClient.runQuery({
     sqlQuery: 'INSERT INTO user (id, name, cpf, birthDate) VALUES (?, ?, ?, ?)',
-    placeholderValues: [uuidV4(), 'Jeff Bezos', '99911188800', '1964-12-01'],
+    placeholderValues: [jeffBezosId, 'Jeff Bezos', '99911188800', '1964-12-01'],
   });
 };
 
@@ -44,10 +44,10 @@ describe('Create account', () => {
   });
 
   it('should return 422 when the user does not exist', async () => {
-    await resquest(api)
+    await request(api)
       .post('/account')
       .send({
-        ownerId: nonExistentUserId,
+        userId: nonExistentUserId,
         typeAccount: '',
       })
       .expect(422, {
@@ -56,14 +56,25 @@ describe('Create account', () => {
   });
 
   it('should return 201 when an account is successfully created ', async () => {
-    await resquest(api)
+    await request(api)
       .post('/account')
       .send({
-        ownerId: jeffBezosId,
-        typeAccount: AccountType.checking,
+        userId: jeffBezosId,
+        accountType: AccountType.checking,
       })
-      .expect(422, {
-        message: 'User is mandatory.',
+      .expect(201)
+      .then((response) => {
+        const {
+          id,
+          userId,
+          balance,
+          isActive,
+        } = response.body;
+
+        expect(id).toBeTruthy();
+        expect(userId).toEqual(jeffBezosId);
+        expect(balance).toEqual(0);
+        expect(isActive).toBe(true);
       });
   });
 

@@ -3,7 +3,7 @@ import { Account, AccountType } from '../models/account';
 import { AccountRepository, UserRepository } from './protocols';
 
 interface AccountDTO {
-  ownerId: string;
+  userId: string;
   accountType: AccountType;
 }
 
@@ -21,7 +21,7 @@ export class CreateAccountService {
   }
 
   async create(account: AccountDTO): Promise<Account> {
-    const owner = await this.userRepository.getById(account.ownerId);
+    const owner = await this.userRepository.getById(account.userId);
 
     if (!owner) {
       throw new AppError({
@@ -32,17 +32,17 @@ export class CreateAccountService {
 
     const existingAccount = await this
       .accountRepository
-      .getByOwner(account.ownerId);
+      .getByOwner(account.userId);
 
     if (existingAccount) {
       return existingAccount;
     }
 
-    const { ownerId, accountType } = account;
+    const { userId, accountType } = account;
 
     const newAccount = new Account(
       {
-        ownerId,
+        userId,
         accountType,
       },
     );

@@ -5,7 +5,7 @@ import { CreateAccountService } from '../../../src/app/services/create-account-s
 import { AccountRepository, UserRepository } from '../../../src/app/services/protocols';
 
 const fakeUser = new User({
-  id: 'owneridfake',
+  id: 'userIdfake',
   name: 'fakeUser',
   cpf: '99999999999',
   birthDate: new Date(),
@@ -31,13 +31,13 @@ const makeUserRepository = () => {
 
 const existingAccount = new Account({
   id: '987654123',
-  ownerId: 'owneridfake',
+  userId: 'userIdfake',
   accountType: AccountType.checking,
 });
 
 const fakeAccount = new Account({
   id: 'xptoxpto123',
-  ownerId: 'owneridfake',
+  userId: 'userIdfake',
   accountType: AccountType.checking,
 });
 
@@ -47,7 +47,7 @@ const makeAccRepository = () => {
       return true;
     }
 
-    async getByOwner(ownerId: string): Promise<Account|undefined> {
+    async getByOwner(userId: string): Promise<Account|undefined> {
       return undefined;
     }
 
@@ -89,7 +89,7 @@ describe('CreateAccountService', () => {
     jest.spyOn(userRepositoryStub, 'getById')
       .mockReturnValueOnce(Promise.resolve(undefined));
 
-    const promise = sut.create({ ownerId: fakeUser.id, accountType: AccountType.checking });
+    const promise = sut.create({ userId: fakeUser.id, accountType: AccountType.checking });
     expect(promise).rejects.toThrowError();
   });
 
@@ -101,7 +101,7 @@ describe('CreateAccountService', () => {
 
     const account = await sut
       .create({
-        ownerId: fakeUser.id,
+        userId: fakeUser.id,
         accountType: AccountType.checking,
       });
 
@@ -113,12 +113,12 @@ describe('CreateAccountService', () => {
 
     const account = await sut
       .create({
-        ownerId: fakeUser.id,
+        userId: fakeUser.id,
         accountType: AccountType.checking,
       });
 
     expect(account.id).toBeTruthy();
-    expect(account.ownerId).toEqual(fakeUser.id);
+    expect(account.userId).toEqual(fakeUser.id);
     expect(account.balance).toEqual(0);
     // FIXME - this amount is currently broken
     expect(account.dailyWithdrawalLimit).toEqual(100000);

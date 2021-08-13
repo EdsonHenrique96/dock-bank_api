@@ -11,14 +11,14 @@ const makeAccRepository = () => {
       return true;
     }
 
-    async getByOwner(ownerId: string): Promise<Account|undefined> {
+    async getByOwner(userId: string): Promise<Account|undefined> {
       return undefined;
     }
 
     async getByid(id: string): Promise<Account|undefined> {
       return new Account({
         id: 'xptoxpto123',
-        ownerId: 'owneridfake',
+        userId: 'userIdfake',
         accountType: AccountType.checking,
       });
     }
