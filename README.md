@@ -66,7 +66,7 @@ Note: import in insomia as json
     └── unit
         └── services
 ```
-
+---
 ### Folders description
 
 **scripts**: Contains automation scripts to assist in development
@@ -91,3 +91,7 @@ Note: import in insomia as json
 **src/app/service**: Expert services who know about business rules. importantly, this layer shouldn't know anything about http
 
 **tests**: contain the test source code
+___
+
+### Read the technical debits section
+debitos.md
