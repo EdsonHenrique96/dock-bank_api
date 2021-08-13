@@ -1,33 +1,20 @@
 import { Express } from 'express';
-import { v4 as uuidV4 } from 'uuid';
 import { agent as request } from 'supertest';
 
 import { setupApi } from '../../../src/app/api/index';
-import { mysqlClient } from '../../../src/app/infra/modules/mysql-client';
 
 import { AccountType } from '../../../src/app/models/account';
 
-const cleanDB = async (): Promise<void> => {
-  await mysqlClient.runQuery({
-    sqlQuery: 'DELETE FROM transaction',
-  });
+import {
+  cleanDB,
+  closeConnection,
+  createUser,
+  existingUserId,
+  nonExistentUserId,
+} from '../helpers/db';
 
-  await mysqlClient.runQuery({
-    sqlQuery: 'DELETE FROM account',
-  });
-
-  await mysqlClient.runQuery({
-    sqlQuery: 'DELETE FROM user',
-  });
-};
-
-const jeffBezosId = uuidV4();
-const nonExistentUserId = uuidV4();
 const populateDb = async (): Promise<void> => {
-  await mysqlClient.runQuery({
-    sqlQuery: 'INSERT INTO user (id, name, cpf, birthDate) VALUES (?, ?, ?, ?)',
-    placeholderValues: [jeffBezosId, 'Jeff Bezos', '99911188800', '1964-12-01'],
-  });
+  await createUser();
 };
 
 describe('Create account', () => {
@@ -40,7 +27,7 @@ describe('Create account', () => {
 
   afterAll(async () => {
     await cleanDB();
-    await mysqlClient.closePoolConnections();
+    await closeConnection();
   });
 
   it('should return 422 when the user does not exist', async () => {
@@ -59,7 +46,7 @@ describe('Create account', () => {
     await request(api)
       .post('/account')
       .send({
-        userId: jeffBezosId,
+        userId: existingUserId,
         accountType: AccountType.checking,
       })
       .expect(201)
@@ -72,7 +59,7 @@ describe('Create account', () => {
         } = response.body;
 
         expect(id).toBeTruthy();
-        expect(userId).toEqual(jeffBezosId);
+        expect(userId).toEqual(existingUserId);
         expect(balance).toEqual(0);
         expect(isActive).toBe(true);
       });

@@ -1,38 +1,21 @@
 import { Express } from 'express';
-import { v4 as uuidV4 } from 'uuid';
 import { agent as request } from 'supertest';
 
 import { setupApi } from '../../../src/app/api/index';
-import { mysqlClient } from '../../../src/app/infra/modules/mysql-client';
-import { AccountType } from '../../../src/app/models/account';
 
-const cleanDB = async (): Promise<void> => {
-  await mysqlClient.runQuery({
-    sqlQuery: 'DELETE FROM transaction',
-  });
+import {
+  cleanDB,
+  createUser,
+  createAccount,
+  exitingAccountId,
+  nonExistentAccountId,
+  closeConnection,
+} from '../helpers/db';
 
-  await mysqlClient.runQuery({
-    sqlQuery: 'DELETE FROM account',
-  });
-
-  await mysqlClient.runQuery({
-    sqlQuery: 'DELETE FROM user',
-  });
-};
-
-const jeffBezosId = uuidV4();
-const accountId = uuidV4();
-const nonExistentAccountId = uuidV4();
 const populateDb = async (): Promise<void> => {
-  await mysqlClient.runQuery({
-    sqlQuery: 'INSERT INTO user (id, name, cpf, birthDate) VALUES (?, ?, ?, ?)',
-    placeholderValues: [jeffBezosId, 'Jeff Bezos', '99911188800', '1964-12-01'],
-  });
+  await createUser();
 
-  await mysqlClient.runQuery({
-    sqlQuery: 'INSERT INTO account (id, userId, balance, dailyWithdrawalLimit, isActive, accountType) VALUES (?, ?, ?, ?, ?, ?)',
-    placeholderValues: [accountId, jeffBezosId, 0, 100000, true, AccountType.checking],
-  });
+  await createAccount();
 };
 
 describe('Transaction', () => {
@@ -45,12 +28,12 @@ describe('Transaction', () => {
 
   afterAll(async () => {
     await cleanDB();
-    await mysqlClient.closePoolConnections();
+    await closeConnection();
   });
 
   it('should return 200 and a list of transactions', async () => {
     await request(api)
-      .get(`/account/${accountId}/transaction`)
+      .get(`/account/${exitingAccountId}/transaction`)
       .send()
       .expect(200);
   });
