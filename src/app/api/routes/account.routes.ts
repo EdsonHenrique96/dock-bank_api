@@ -66,8 +66,8 @@ accountRoutes.patch('/account/:accountId/balance', async (req: Request, res: Res
         accounRepository,
         transactionRepository,
       );
-      const x = await accountDepositService.withdraw(accountId, amount);
-      return res.json(x);
+      const withdrawTransaction = await accountDepositService.withdraw(accountId, amount);
+      return res.json(withdrawTransaction);
     }
 
     return res.status(400).json({ message: 'Operation not allowed' });

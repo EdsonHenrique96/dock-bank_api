@@ -30,7 +30,7 @@ export class AccountWithdrawService {
     }
 
     const todayWithdrawalTotal = transactions.reduce((acc, current) => {
-      let sum = 0;
+      let sum = acc;
       if (current.type === 'withdraw') {
         sum = acc + current.amount;
       }

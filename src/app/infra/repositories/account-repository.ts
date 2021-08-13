@@ -77,6 +77,7 @@ export class DbAccountRepository implements AccountRepository {
     const sqlQuery = `
       UPDATE ${this.TABLE_NAME}
       SET balance=?, dailyWithdrawalLimit=?, isActive=?, accountType=?
+      WHERE id=?
     `;
 
     const {
@@ -90,7 +91,7 @@ export class DbAccountRepository implements AccountRepository {
       .mysqlClient
       .runQuery({
         sqlQuery,
-        placeholderValues: [balance, dailyWithdrawalLimit, isActive, accountType],
+        placeholderValues: [balance, dailyWithdrawalLimit, isActive, accountType, account.id],
       });
 
     return result.affectedRows === 1;
