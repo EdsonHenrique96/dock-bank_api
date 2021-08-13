@@ -27,6 +27,16 @@ Run integration tests
  ./scripts/unit-tests.sh
 ```
 
+install all dependencies
+```sh
+ ./scripts/install-dep.sh "yarn"
+```
+
+install only one
+```sh
+ ./scripts/install-dep.sh "yarn i <dependency-name>"
+```
+
 ## Project structure
 
 ```
