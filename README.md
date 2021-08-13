@@ -13,6 +13,7 @@ This api is responsible for managing and performing banking actions on customer 
 Ensure you are in the project's root directory
 
 Run the application, generate dependencies and start mysql
+Application will be available at **http://localhost:3006**
 ```sh
  ./scripts/development.sh
 ```
