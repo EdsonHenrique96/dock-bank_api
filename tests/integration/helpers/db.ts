@@ -26,7 +26,7 @@ export const cleanDB = async (): Promise<void> => {
 
 export const existingUserId = uuidV4();
 export const nonExistentUserId = uuidV4();
-export const exitingAccountId = uuidV4();
+export const existingAccountId = uuidV4();
 export const nonExistentAccountId = uuidV4();
 
 export const createUser = async (): Promise<void> => {
@@ -39,7 +39,7 @@ export const createUser = async (): Promise<void> => {
 export const createAccount = async () : Promise<void> => {
   await mysqlClient.runQuery({
     sqlQuery: 'INSERT INTO account (id, userId, balance, dailyWithdrawalLimit, isActive, accountType) VALUES (?, ?, ?, ?, ?, ?)',
-    placeholderValues: [exitingAccountId, existingUserId, 0, 100000, true, AccountType.checking],
+    placeholderValues: [existingAccountId, existingUserId, 0, 100000, true, AccountType.checking],
   });
 };
 

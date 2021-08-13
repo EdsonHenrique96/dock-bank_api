@@ -8,7 +8,7 @@ import {
   closeConnection,
   createAccount,
   createUser,
-  exitingAccountId,
+  existingAccountId,
   nonExistentAccountId,
 } from '../helpers/db';
 
@@ -31,7 +31,7 @@ describe('Balance', () => {
   });
   it('should return 200 and the balance', async () => {
     await request(api)
-      .get(`/account/${exitingAccountId}/balance`)
+      .get(`/account/${existingAccountId}/balance`)
       .send()
       .expect(200, {
         balance: 0,

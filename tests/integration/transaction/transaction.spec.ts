@@ -7,7 +7,7 @@ import {
   cleanDB,
   createUser,
   createAccount,
-  exitingAccountId,
+  existingAccountId,
   nonExistentAccountId,
   closeConnection,
 } from '../helpers/db';
@@ -33,7 +33,7 @@ describe('Transaction', () => {
 
   it('should return 200 and a list of transactions', async () => {
     await request(api)
-      .get(`/account/${exitingAccountId}/transaction`)
+      .get(`/account/${existingAccountId}/transaction`)
       .send()
       .expect(200);
   });

@@ -8,7 +8,7 @@ import {
   closeConnection,
   createAccount,
   createUser,
-  exitingAccountId,
+  existingAccountId,
   nonExistentAccountId,
 } from '../helpers/db';
 
@@ -31,7 +31,7 @@ describe('Disable', () => {
   });
   it('should return 200 and isActive = false when an account is successfully disabled', async () => {
     await request(api)
-      .patch(`/account/${exitingAccountId}`)
+      .patch(`/account/${existingAccountId}`)
       .send()
       .expect(200)
       .then((response) => {

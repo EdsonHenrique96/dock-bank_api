@@ -8,7 +8,7 @@ import {
   closeConnection,
   createAccount,
   createUser,
-  exitingAccountId,
+  existingAccountId,
   nonExistentAccountId,
   getTransactionById,
   getAccountById,
@@ -41,7 +41,7 @@ describe('Deposit', () => {
   });
   it('should return 200, create transaction correctly and update balance when the deposit is successful.', async () => {
     await request(api)
-      .patch(`/account/${exitingAccountId}/balance`)
+      .patch(`/account/${existingAccountId}/balance`)
       .send({
         type: 'deposit',
         amount: 100,
@@ -56,11 +56,11 @@ describe('Deposit', () => {
           .then((transaction) => {
             expect(transaction.id).toEqual(transactionId);
             expect(transaction.amount).toEqual(100);
-            expect(transaction.accountId).toEqual(exitingAccountId);
+            expect(transaction.accountId).toEqual(existingAccountId);
             expect(transaction.type).toEqual('deposit');
           });
 
-        getAccountById(exitingAccountId)
+        getAccountById(existingAccountId)
           .then((account) => {
             expect(account.id).toBeTruthy();
             expect(account.balance).toEqual(100);

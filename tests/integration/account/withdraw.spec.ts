@@ -9,7 +9,7 @@ import {
   createAccount,
   createUser,
   createTransaction,
-  exitingAccountId,
+  existingAccountId,
   cleanTransactions,
   updateBalance,
   getTransactionById,
@@ -43,16 +43,16 @@ describe('Withdraw', () => {
 
   it('should return 200 for a withdrawal of 500 since the daily limit is 100,000 and was withheld today 99,500', async () => {
     await Promise.all([
-      createTransaction({ accountId: exitingAccountId, amount: 200000, type: 'deposit' }),
-      createTransaction({ accountId: exitingAccountId, amount: 99000, type: 'withdraw' }),
-      createTransaction({ accountId: exitingAccountId, amount: 500, type: 'withdraw' }),
-      updateBalance(exitingAccountId, 100500), // update balance based on above transactions
+      createTransaction({ accountId: existingAccountId, amount: 200000, type: 'deposit' }),
+      createTransaction({ accountId: existingAccountId, amount: 99000, type: 'withdraw' }),
+      createTransaction({ accountId: existingAccountId, amount: 500, type: 'withdraw' }),
+      updateBalance(existingAccountId, 100500), // update balance based on above transactions
     ])
       .then(() => console.log('Transactions created'))
       .catch(() => console.log('Transaction creation fails'));
 
     await request(api)
-      .patch(`/account/${exitingAccountId}/balance`)
+      .patch(`/account/${existingAccountId}/balance`)
       .send({
         type: 'withdraw',
         amount: 500,
@@ -67,7 +67,7 @@ describe('Withdraw', () => {
           .then((transaction) => {
             expect(transaction.id).toEqual(transactionId);
             expect(transaction.amount).toEqual(500);
-            expect(transaction.accountId).toEqual(exitingAccountId);
+            expect(transaction.accountId).toEqual(existingAccountId);
             expect(transaction.type).toEqual('withdraw');
           });
       });
@@ -75,16 +75,16 @@ describe('Withdraw', () => {
 
   it('should return 400 for a withdrawal of 501 since the daily limit is 100,000 and was withheld today 99,500', async () => {
     await Promise.all([
-      createTransaction({ accountId: exitingAccountId, amount: 200000, type: 'deposit' }),
-      createTransaction({ accountId: exitingAccountId, amount: 99000, type: 'withdraw' }),
-      createTransaction({ accountId: exitingAccountId, amount: 500, type: 'withdraw' }),
-      updateBalance(exitingAccountId, 100500), // update balance based on above transactions
+      createTransaction({ accountId: existingAccountId, amount: 200000, type: 'deposit' }),
+      createTransaction({ accountId: existingAccountId, amount: 99000, type: 'withdraw' }),
+      createTransaction({ accountId: existingAccountId, amount: 500, type: 'withdraw' }),
+      updateBalance(existingAccountId, 100500), // update balance based on above transactions
     ])
       .then(() => console.log('Transactions created'))
       .catch(() => console.log('Transaction creation fails'));
 
     await request(api)
-      .patch(`/account/${exitingAccountId}/balance`)
+      .patch(`/account/${existingAccountId}/balance`)
       .send({
         type: 'withdraw',
         amount: 501,
