@@ -13,15 +13,15 @@ const fakeUser = new User({
 
 const makeUserRepository = () => {
   class UserRepositoryStub implements UserRepository {
-    async add(user: User): Promise<User> {
+    async save(user: User): Promise<User> {
       return fakeUser;
     }
 
-    async getById(id: string): Promise<User|null> {
+    async getById(id: string): Promise<User|undefined> {
       return fakeUser;
     }
 
-    async getByCpf(cpf: string): Promise<User|null> {
+    async getByCpf(cpf: string): Promise<User|undefined> {
       return fakeUser;
     }
   }
@@ -43,12 +43,20 @@ const fakeAccount = new Account({
 
 const makeAccRepository = () => {
   class AccRepositoryStub implements AccountRepository {
-    async add(account: Account): Promise<Account> {
+    async save(account: Account): Promise<boolean> {
+      return true;
+    }
+
+    async getByOwner(ownerId: string): Promise<Account|undefined> {
+      return undefined;
+    }
+
+    async getByid(id: string): Promise<Account|undefined> {
       return fakeAccount;
     }
 
-    async getByOwner(ownerId: string): Promise<Account|null> {
-      return null;
+    async update(account: Account): Promise<boolean> {
+      return true;
     }
   }
 
@@ -62,7 +70,10 @@ const makeSut = (): {
 } => {
   const accRepositoryStub = makeAccRepository();
   const userRepositoryStub = makeUserRepository();
-  const sut = new CreateAccountService(accRepositoryStub, userRepositoryStub);
+  const sut = new CreateAccountService(
+    accRepositoryStub,
+    userRepositoryStub,
+  );
 
   return {
     sut,
@@ -72,14 +83,14 @@ const makeSut = (): {
 };
 
 describe('CreateAccountService', () => {
-  it('should throws when user not exist', async () => {
+  it('should throws when user not exist', () => {
     const { sut, userRepositoryStub } = makeSut();
 
     jest.spyOn(userRepositoryStub, 'getById')
-      .mockResolvedValueOnce(null);
+      .mockReturnValueOnce(Promise.resolve(undefined));
 
     const promise = sut.create({ ownerId: fakeUser.id, accountType: 'checking' });
-    expect(promise).rejects.toThrow();
+    expect(promise).rejects.toThrowError();
   });
 
   it('should return an account when account already exists', async () => {
@@ -106,6 +117,12 @@ describe('CreateAccountService', () => {
         accountType: 'checking',
       });
 
-    expect(account).toEqual(fakeAccount);
+    expect(account.id).toBeTruthy();
+    expect(account.ownerId).toEqual(fakeUser.id);
+    expect(account.balance).toEqual(0);
+    // FIXME - this amount is currently broken
+    expect(account.dailyWithdrawalLimit).toEqual(100000);
+    expect(account.isActive).toBeTruthy();
+    expect(account.accountType).toEqual('checking');
   });
 });
