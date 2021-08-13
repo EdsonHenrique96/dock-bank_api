@@ -1,10 +1,10 @@
 import { AppError, ErrorType } from './errors/app-error';
-import { Account } from '../models/account';
+import { Account, AccountType } from '../models/account';
 import { AccountRepository, UserRepository } from './protocols';
 
 interface AccountDTO {
   ownerId: string;
-  accountType: 'savings' | 'checking' | 'business';
+  accountType: AccountType;
 }
 
 export class CreateAccountService {

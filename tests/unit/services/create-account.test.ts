@@ -1,5 +1,5 @@
 /* eslint max-classes-per-file: ["error", 3] */
-import { Account } from '../../../src/app/models/account';
+import { Account, AccountType } from '../../../src/app/models/account';
 import { User } from '../../../src/app/models/user';
 import { CreateAccountService } from '../../../src/app/services/create-account-service';
 import { AccountRepository, UserRepository } from '../../../src/app/services/protocols';
@@ -32,13 +32,13 @@ const makeUserRepository = () => {
 const existingAccount = new Account({
   id: '987654123',
   ownerId: 'owneridfake',
-  accountType: 'checking',
+  accountType: AccountType.checking,
 });
 
 const fakeAccount = new Account({
   id: 'xptoxpto123',
   ownerId: 'owneridfake',
-  accountType: 'checking',
+  accountType: AccountType.checking,
 });
 
 const makeAccRepository = () => {
@@ -89,7 +89,7 @@ describe('CreateAccountService', () => {
     jest.spyOn(userRepositoryStub, 'getById')
       .mockReturnValueOnce(Promise.resolve(undefined));
 
-    const promise = sut.create({ ownerId: fakeUser.id, accountType: 'checking' });
+    const promise = sut.create({ ownerId: fakeUser.id, accountType: AccountType.checking });
     expect(promise).rejects.toThrowError();
   });
 
@@ -102,7 +102,7 @@ describe('CreateAccountService', () => {
     const account = await sut
       .create({
         ownerId: fakeUser.id,
-        accountType: 'checking',
+        accountType: AccountType.checking,
       });
 
     expect(account).toEqual(existingAccount);
@@ -114,7 +114,7 @@ describe('CreateAccountService', () => {
     const account = await sut
       .create({
         ownerId: fakeUser.id,
-        accountType: 'checking',
+        accountType: AccountType.checking,
       });
 
     expect(account.id).toBeTruthy();

@@ -1,6 +1,10 @@
 import { v4 as uuidV4 } from 'uuid';
 
-type AccountType = 'savings' | 'checking' | 'business';
+export enum AccountType {
+  savings = 'savings',
+  checking = 'checking',
+  business = 'business'
+}
 
 export class Account {
   public readonly id: string;

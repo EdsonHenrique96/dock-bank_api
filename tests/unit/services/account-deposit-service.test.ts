@@ -1,7 +1,8 @@
 /* eslint max-classes-per-file: ["error", 3] */
-import { Account } from '../../../src/app/models/account';
+import { Account, AccountType } from '../../../src/app/models/account';
 import { Transaction, TransactionType } from '../../../src/app/models/transaction';
 import { AccountDepositService } from '../../../src/app/services/account-deposit-service';
+import { AppError } from '../../../src/app/services/errors/app-error';
 import { AccountRepository, TransactionRepository } from '../../../src/app/services/protocols';
 
 const makeAccRepository = () => {
@@ -18,7 +19,7 @@ const makeAccRepository = () => {
       return new Account({
         id: 'xptoxpto123',
         ownerId: 'owneridfake',
-        accountType: 'checking',
+        accountType: AccountType.checking,
       });
     }
 
@@ -105,7 +106,7 @@ const makeSut = () => {
 };
 
 describe('AccountDepositService', () => {
-  it('should throw an error when one does not exist', () => {
+  it('should throw an error when one does not exist', async () => {
     const { sut, accRepository } = makeSut();
     const accountId = 'fakeid123';
     const amount = 200;
