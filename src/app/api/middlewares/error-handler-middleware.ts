@@ -5,6 +5,7 @@ import { AppError } from '../../services/errors/app-error';
 enum HttpErrors {
   AccountNotFoundError = 422,
   AccountWithoutBalance = 400,
+  ExceededTheDailyLimit = 400,
   UserAlreadExistsError = 422,
   UserNotFoundError = 422,
 }
@@ -20,7 +21,7 @@ export default (
   if (error instanceof AppError) {
     return res
       .status(HttpErrors[error.type])
-      .json({ message: error.message });
+      .json();
   }
 
   return res

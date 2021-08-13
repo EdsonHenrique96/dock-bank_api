@@ -8,8 +8,8 @@
     "start:dev": "nodemon",
     "build": "rm -rf ./build && tsc",
     "start": "yarn build && node build/index.js",
-    "test:watch": "jest --watch",
-    "test": "jest --verbose",
+    "test:watch": "jest --watch --runInBand",
+    "test": "jest --verbose --runInBand",
     "lint": "eslint . --ext .ts,.js"
   },
   "devDependencies": {

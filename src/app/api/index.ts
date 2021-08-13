@@ -33,7 +33,7 @@ export const setupApi = async (): Promise<Express> => {
 
   api.use(accountRoutes);
   api.use(userRoutes);
-  // FIXME - this middleware is not working
+
   api.use(errorHandler);
 
   return api;

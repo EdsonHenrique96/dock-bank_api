@@ -1,4 +1,9 @@
-import { Request, Response, Router } from 'express';
+import {
+  NextFunction,
+  Request,
+  Response,
+  Router,
+} from 'express';
 import { mysqlClient } from '../../infra/modules/mysql-client';
 
 import { DbAccountRepository } from '../../infra/repositories/account-repository';
@@ -13,22 +18,13 @@ import { GetBalanceAccountService } from '../../services/get-balance-account-ser
 import { DisableAccountService } from '../../services/disable-account-service';
 import { GetTransactionService } from '../../services/get-transaction-service';
 
-import { AppError } from '../../services/errors/app-error';
-
-enum HttpErrors {
-  AccountNotFoundError = 422,
-  AccountWithoutBalance = 400,
-  UserAlreadExistsError = 422,
-  UserNotFoundError = 422,
-}
-
 const accountRoutes = Router();
 
 const accounRepository = new DbAccountRepository(mysqlClient);
 const userRepository = new DbUserRepository(mysqlClient);
 const transactionRepository = new DbTransactionRepository(mysqlClient);
 
-accountRoutes.post('/account', async (req: Request, res: Response) => {
+accountRoutes.post('/account', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const accountDate = req.body;
 
@@ -46,21 +42,11 @@ accountRoutes.post('/account', async (req: Request, res: Response) => {
 
     return res.status(201).json(accountCreated);
   } catch (error) {
-    console.error({ message: error.message });
-
-    if (error instanceof AppError) {
-      return res
-        .status(HttpErrors[error.type])
-        .json({ message: error.message });
-    }
-
-    return res
-      .status(500)
-      .json({ message: error.message });
+    return next(error);
   }
 });
 
-accountRoutes.patch('/account/:accountId/balance', async (req: Request, res: Response) => {
+accountRoutes.patch('/account/:accountId/balance', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { accountId } = req.params;
     const { amount, type } = req.body;
@@ -86,21 +72,11 @@ accountRoutes.patch('/account/:accountId/balance', async (req: Request, res: Res
 
     return res.status(400).json({ message: 'Operation not allowed' });
   } catch (error) {
-    console.error({ message: error.message });
-
-    if (error instanceof AppError) {
-      return res
-        .status(HttpErrors[error.type])
-        .json({ message: error.message });
-    }
-
-    return res
-      .status(500)
-      .json({ message: error.message });
+    return next(error);
   }
 });
 
-accountRoutes.get('/account/:accountId/balance', async (req: Request, res: Response) => {
+accountRoutes.get('/account/:accountId/balance', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { accountId } = req.params;
 
@@ -111,21 +87,11 @@ accountRoutes.get('/account/:accountId/balance', async (req: Request, res: Respo
 
     return res.json({ balance });
   } catch (error) {
-    console.error({ message: error.message });
-
-    if (error instanceof AppError) {
-      return res
-        .status(HttpErrors[error.type])
-        .json({ message: error.message });
-    }
-
-    return res
-      .status(500)
-      .json({ message: error.message });
+    return next(error);
   }
 });
 
-accountRoutes.patch('/account/:accountId', async (req: Request, res: Response) => {
+accountRoutes.patch('/account/:accountId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { accountId } = req.params;
 
@@ -136,21 +102,11 @@ accountRoutes.patch('/account/:accountId', async (req: Request, res: Response) =
 
     return res.json({ accountId, isActive: !isDisable });
   } catch (error) {
-    console.error({ message: error.message });
-
-    if (error instanceof AppError) {
-      return res
-        .status(HttpErrors[error.type])
-        .json({ message: error.message });
-    }
-
-    return res
-      .status(500)
-      .json({ message: error.message });
+    return next(error);
   }
 });
 
-accountRoutes.get('/account/:accountId/transaction', async (req: Request, res: Response) => {
+accountRoutes.get('/account/:accountId/transaction', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { accountId } = req.params;
 
@@ -164,17 +120,7 @@ accountRoutes.get('/account/:accountId/transaction', async (req: Request, res: R
 
     return res.json(transactions);
   } catch (error) {
-    console.error({ message: error.message });
-
-    if (error instanceof AppError) {
-      return res
-        .status(HttpErrors[error.type])
-        .json({ message: error.message });
-    }
-
-    return res
-      .status(500)
-      .json({ message: error.message });
+    return next(error);
   }
 });
 

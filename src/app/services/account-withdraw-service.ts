@@ -43,8 +43,6 @@ export class AccountWithdrawService {
   async withdraw(accountId: string, amount: number): Promise<WithdrawTransaction> {
     const account = await this.accountRepository.getByid(accountId);
 
-    console.log(account);
-
     if (!account) {
       throw new AppError({
         message: 'Account not found.',

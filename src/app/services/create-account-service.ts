@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { AppError, ErrorType } from './errors/app-error';
 import { Account } from '../models/account';
 import { AccountRepository, UserRepository } from './protocols';
@@ -21,10 +20,8 @@ export class CreateAccountService {
     this.userRepository = userRepository;
   }
 
-  public async create(account: AccountDTO): Promise<Account> {
-    const owner = await this
-      .userRepository
-      .getById(account.ownerId);
+  async create(account: AccountDTO): Promise<Account> {
+    const owner = await this.userRepository.getById(account.ownerId);
 
     if (!owner) {
       throw new AppError({
@@ -45,7 +42,6 @@ export class CreateAccountService {
 
     const newAccount = new Account(
       {
-        id: uuidv4(),
         ownerId,
         accountType,
       },

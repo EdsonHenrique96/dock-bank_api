@@ -4,21 +4,17 @@ export enum ErrorType {
   ExceededTheDailyLimit = 'ExceededTheDailyLimit',
   UserAlreadExistsError = 'UserAlreadExistsError',
   UserNotFoundError = 'UserNotFoundError',
-
 }
-
 interface AppErrorInterface {
   message: string,
   type: ErrorType
 }
 
-export class AppError {
+export class AppError extends Error {
   public readonly type: ErrorType;
 
-  public readonly message: string;
-
   constructor({ message, type }: AppErrorInterface) {
-    this.message = message;
+    super(message);
     this.type = type;
   }
 }
