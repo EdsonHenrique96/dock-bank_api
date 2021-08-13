@@ -37,6 +37,12 @@ install only one
  ./scripts/install-dep.sh "yarn i <dependency-name>"
 ```
 
+# Doc
+
+In the `docs` folder you will find an insomina collection, with an example for all the application routes.
+
+Note: import in insomia as json
+
 ## Project structure
 
 ```
