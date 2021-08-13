@@ -5,6 +5,7 @@
 - Criar indice para cpf na tabela user.
 - Mover a criação do id e da entidade para dentro do repository ?
 - Garantir transação da atualização da conta e criação da transaction
+- Adicionar try catch nos repository, logar com degub e repassar o erro formatado.
 
 IMPORTANTE:
 
